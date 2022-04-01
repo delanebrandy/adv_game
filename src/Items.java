@@ -20,16 +20,29 @@ public class Items {
     }
 
     public void incSlot() {
-        slot++;
+        if (slot == 3) {
+            slot = 0;
+        } else {
+            slot++;
+        }
     }
     public void decSlot() {
-        slot--;
+        if (slot == 0) {
+            slot = 3;
+        } else {
+            slot--;
+        }
     }
     public int getSlot() {
-        return this.slot;
+        return slot;
     }
-    public void setSlot(int slot) {
-        this.slot = slot;
+    public void setSlot(int inSlot) {
+        if (inSlot >= 0 && inSlot <= 3) {
+            slot = inSlot;
+        } else {
+            System.out.println("Slot is out of range - Slot will remain the same: " + slot);
+            slot = 0;
+        }
     }
 
     public void setItem(String item) {
@@ -86,7 +99,11 @@ public class Items {
     public String toString() {
         String s = "";
         for (int i = 0; i <= itemList.length - 1; i++) {
-            s += itemList[i] + " ";
+            if (i != itemList.length-1) {
+                s += itemList[i] + ", ";
+            } else {
+                s += itemList[i] + " ";
+            }
         }
         return s;
     }
