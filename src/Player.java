@@ -1,10 +1,16 @@
 public class Player{
-
+    private final String name;
     private Health health;
     private Items items;
 
-
     public Player(){
+        this.items = new Items();
+        this.health = new Health();
+        this.name = "Player";
+    }
+
+    public Player(String name){
+        this.name = name;
         this.items = new Items();
         this.health = new Health();
     }
@@ -40,4 +46,9 @@ public class Player{
     public int getSlot(){
         return this.items.getSlot();
     }
+
+    public String itemList(){
+        return this.items.itemList();
+    }
+
 }
