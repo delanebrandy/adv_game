@@ -3,25 +3,30 @@ import java.util.ArrayList;
 public class Player{
     private final String name;
     private Health health;
-    private Items items;
+    private ItemBar itemBar;
+    private int damageBoost;
+    //private Items items;
 
     public Player(){
-        this.items = new Items();
+        this.itemBar = new ItemBar();
         this.health = new Health();
         this.name = "Player";
+        this.damageBoost = 1;
     }
 
     public Player(String name){
         this.name = name;
-        this.items = new Items();
+        this.itemBar = new ItemBar();
         this.health = new Health();
+        this.damageBoost = 1;
     }
 
     public int attack(){
-        return this.items.useItem();
+        return this.itemBar.attack();
     }
-    public void useItem(String item){
-        this.items.useItem();
+    public int useItem(){
+        return  this.itemBar.useItem();
+
     }
 
     public String currentItem(){
