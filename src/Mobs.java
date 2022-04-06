@@ -1,6 +1,6 @@
 public class Mobs {
     private Health health;
-    private String name;
+    private final String name;
     private int damage;
 
 
@@ -9,12 +9,32 @@ public class Mobs {
         this.damage = damage;
         this.health = new Health(health);
     }
+    public Mobs(int level) throws Exception {
+        if (level == 1) {
+            this.name = "Goblin";
+            this.damage = 20;
+            this.health = new Health(40);
+        }
+        else if (level == 2) {
+            this.name = "Orc";
+            this.damage = 30;
+            this.health = new Health(60);
+        }
+        else if (level == 3) {
+            this.name = "Troll";
+            this.damage = 40;
+            this.health = new Health(90);
+        }
+        else{
+            throw new Exception("Invalid level");
+        }
+    }
 
     public String getName() {
         return name;
     }
 
-    public int getDamage() {
+    public int attack() {
         return damage;
     }
 
@@ -24,10 +44,6 @@ public class Mobs {
 
     public void setDamage(int damage) {
         this.damage = damage;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void takeDamage(int damage) {

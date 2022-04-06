@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Player{
     private final String name;
     private Health health;
@@ -18,6 +20,13 @@ public class Player{
     public int attack(){
         return this.items.useItem();
     }
+    public void useItem(String item){
+        this.items.useItem();
+    }
+
+    public String currentItem(){
+        return this.items.getCurrentItem();
+    }
 
     public void heal(int value){
         this.health.heal(value);
@@ -33,6 +42,9 @@ public class Player{
     public void addItem(String item){
         this.items.setItem(item);
     }
+    public ArrayList<String> getItems(){
+        return this.items.getPlayerItems();
+    }
 
     public void removeItem(int slot){
         this.items.removeItem(slot);
@@ -47,8 +59,5 @@ public class Player{
         return this.items.getSlot();
     }
 
-    public String itemList(){
-        return this.items.itemList();
-    }
 
 }
