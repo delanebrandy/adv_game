@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Player{
     private final String name;
     private Health health;
-    private Items items;
+    private Item items;
 
     public Player(){
         this.items = new Items();
