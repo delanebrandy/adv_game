@@ -1,7 +1,8 @@
 public class Mobs {
-    private Health health;
+    private final Health health;
     private final String name;
-    private int damage;
+    private final int damage;
+    private int damageReduction;
 
 
     public Mobs(String name, int damage, int health) {
@@ -34,16 +35,20 @@ public class Mobs {
         return name;
     }
 
+    public int getDamage() {
+        return this.damage;
+    }
+
     public int attack() {
-        return damage;
+        return this.damage;
     }
 
     public int getHealth() {
-        return health.getHealth();
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
+        if (this.health.getHealth() > 0) {
+        return this.health.getHealth();
+        } else {
+            return 0;
+        }
     }
 
     public void takeDamage(int damage) {
