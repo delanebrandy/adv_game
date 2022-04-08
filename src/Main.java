@@ -11,8 +11,18 @@ public class Main {
         // Initialize player -- name, health, damage, item
         String playerName = intro(); // Get player name & game into
         Player player = new Player(playerName); // create a new player
-        //randomEvent(player);
 
+        System.out.println("\nWhat difficulty do you want to play on? (Easy, Medium, Hard)");
+
+        Scanner input = new Scanner(System.in);
+        String difficulty = input.nextLine();
+
+        int difficultyInt;
+
+        if (difficulty.equalsIgnoreCase("Easy")) {difficultyInt = 1;}
+        else if (difficulty.equalsIgnoreCase("Medium")) {difficultyInt = 2;}
+        else if (difficulty.equalsIgnoreCase("Hard")) {difficultyInt = 3;}
+        else {difficultyInt = 1;}
 
         //Bosses
         ArrayList<Boss> bosses = new ArrayList<>();
@@ -22,8 +32,7 @@ public class Main {
         bosses.add(b1);
         bosses.add(b2);
 
-        dungeon(player, bosses);
-
+        dungeon(player, bosses, difficultyInt);
 
     }
 
@@ -41,10 +50,9 @@ public class Main {
         return nameInput.nextLine();
     }
 
-    public static void dungeon(Player p, ArrayList<Boss> bosses) throws Exception {
-        final String lineBreak = "\n----------------------------------------------------\n";
+    public static void dungeon(Player p, ArrayList<Boss> bosses, int difficulty) throws Exception {
 
-        System.out.println("You enter the dungeon.");
+        System.out.println("You enter the dungeon.\n");
         int dungeonPercent = 0;
 
         while (p.getHealth() > 0) {
@@ -56,17 +64,15 @@ public class Main {
                 dungeonPercent += bossFight(p, bosses.get(1), dungeonPercent);
             }
 
-            System.out.println("\n~~~~~~~~~~~~~~Event Start~~~~~~~~~~~~~~");
-            Mobs mob = randomEvent(p);
+            Mobs mob = randomEvent(p, difficulty);
+            System.out.println("\n");
             sleep(1000);
 
 
             if (mob != null) {
-                System.out.println(lineBreak);
                 System.out.println("You encounter a " + mob.getName() + "!");
                 System.out.println("You have " + p.getHealth() + " health.");
-                System.out.println("You have a " + p.getWeaponName() + ".");
-                System.out.println(lineBreak);
+                System.out.println("You have a " + p.getWeaponName() + ".\n");
 
                 System.out.println("What do you do? (Run or fight)");
 
@@ -76,16 +82,16 @@ public class Main {
                 if (choice.equals("fight") || choice.equals("attack")) {
                     dungeonPercent += fight(p, mob, dungeonPercent);
                 } else if (choice.equals("run")) {
-                    System.out.println("~~~~~~~~~~~~~~~Event End~~~~~~~~~~~~~~~\n");
+                    System.out.println("You run away from the " + mob.getName() + ".\n");
                 } else {
-                    System.out.println("Invalid input. Input taken as run");
+                    System.out.println("Invalid input. Input taken as run\n");
                 }
             }
         }
     }
 
     public static int bossFight(Player p, Boss b, int dungeonPercent) {
-        System.out.println("You encounter a " + b.getName() + "!");
+        System.out.println("\nYou encounter a " + b.getName() + "!");
         System.out.println("The " + b.getName() + " has " + b.getHealth() + " health.");
         System.out.println("The " + b.getName() + " has " + b.getDamage() + " damage.");
 
@@ -96,10 +102,8 @@ public class Main {
 
 
     public static int fight(Player p, Mobs mob, int dungeonPercent) {
-        final String lineBreak = "\n----------------------------------------------------\n";
-        final String lineBreak2 = "----------------------------------------------------";
 
-        System.out.println("The " + mob.getName() + " has " + mob.getHealth() + " health.");
+        System.out.println("\nThe " + mob.getName() + " has " + mob.getHealth() + " health.");
         while (mob.getHealth() > 0 && p.getHealth() > 0) {
 
             System.out.println("What do you want to do? (attack, use shield, run)");
@@ -110,14 +114,13 @@ public class Main {
                 mob.takeDamage(p.attack());
                 System.out.println("You attack the " + mob.getName() + "!");
                 System.out.println(p.attack() + " damage dealt.");
-                System.out.println(lineBreak2);
 
                 if (mob.getHealth() > 0) {
                     System.out.println("The " + mob.getName() + " has " + mob.getHealth() + " health left.");
                     p.takeDamage(mob.attack());
                     System.out.println("The " + mob.getName() + " attacks you!");
                     System.out.println(mob.attack() + " damage taken.");
-                    System.out.println("You have " + p.getHealth() + " health left.");
+                    System.out.println("You have " + p.getHealth() + " health left.\n");
                 }
                 else {
                     System.out.println("You killed the " + mob.getName() + "!");
@@ -163,7 +166,7 @@ public class Main {
         }
     }
 
-    public static Mobs randomEvent(Player p) throws Exception{
+    public static Mobs randomEvent(Player p, int difficulty) throws Exception{
         Random rand = new Random();
         int random = rand.nextInt(101);
 
@@ -176,7 +179,7 @@ public class Main {
         //5% chance of finding an Axe
         else if (random < 35) {
             if ((p.getWeaponName().equals("Axe"))) {
-                randomEvent(p);}
+                randomEvent(p, difficulty);}
             else{
                 System.out.println("You found an Axe!");
                 p.replaceWeapon("Axe");}
@@ -185,13 +188,13 @@ public class Main {
         //45% change of finding a monster
         else if (random < 80) {
             System.out.println("A monster has appeared!");
-            return new Mobs(1);
+            return new Mobs(difficulty);
         }
 
         //5% chance of finding a Long Sword
         else if (random < 85) {
         if (p.getWeaponName().equals("Long Sword")) {
-                randomEvent(p);}
+                randomEvent(p, difficulty);}
             else{
                 System.out.println("You found a Long Sword!");
                 p.replaceWeapon("Long Sword");}

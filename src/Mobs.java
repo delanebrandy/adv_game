@@ -18,13 +18,13 @@ public class Mobs {
         }
         else if (level == 2) {
             this.name = "Orc";
-            this.damage = 30;
+            this.damage = 25;
             this.health = new Health(60);
         }
         else if (level == 3) {
             this.name = "Troll";
-            this.damage = 40;
-            this.health = new Health(90);
+            this.damage = 30;
+            this.health = new Health(80);
         }
         else{
             throw new Exception("Invalid level");
