@@ -97,7 +97,7 @@ public class Player{
     }
 
     public String toString(){
-        return this.name + "," +this.health.getHealth() + ","+this.inventory.get(0).getDamage() + "," + this.damageBoost;
+        return this.name + "," +this.inventory.get(0).getName() + "," +this.inventory.get(0).getDamage() + "," + this.damageBoost;
     }
 
 

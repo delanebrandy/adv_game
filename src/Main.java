@@ -8,7 +8,8 @@ import static java.lang.Thread.sleep;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        // Initialize player -- name, health, damage, item
+
+        printScoreboard(); //Prints score board
         String playerName = intro(); // Get player name & game into
         Player player = new Player(playerName); // create a new player
 
@@ -37,17 +38,39 @@ public class Main {
     }
 
     public static String intro() {
-        System.out.println("\n----------------------------------------------------");
-        System.out.println("Welcome to the game!");
-        System.out.println("You have been summoned to a land far away where you must fight your way through a dungeon of monsters.");
-        System.out.println("You have been given a big stick lol");
-        System.out.println("You must defeat the monsters (2 mini bosses) and kill the final boss to win the game.");
-        System.out.println("Good luck!");
-        System.out.println("----------------------------------------------------\n");
+        String welcomeMessage =
+        ("\n----------------------------------------------------"
+        +"\nWelcome to the game!"
+        +"\nYou have been summoned to a land far away where you must fight your way through a dungeon of monsters."
+        +"\nYou have been given a big stick lol"
+        +"\nYou must defeat the monsters (2 mini bosses) and kill the final boss to win the game."
+        +"\nGood luck!"
+        +"\n----------------------------------------------------\n"
+        +"\nWhat is your name? ");
 
-        System.out.println("What is your name?:");
+        System.out.println(welcomeMessage);
         Scanner nameInput = new Scanner(System.in);
         return nameInput.nextLine();
+    }
+
+    public static void printScoreboard() {
+        System.out.println("\n----------------------------------------------------");
+        System.out.println("Scoreboard:");
+
+        List<List<String>> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("stats.csv"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                records.add(Arrays.asList(values));
+            }
+            System.out.println(scoreboardToString(records));
+        }
+        catch (IOException e) {
+            System.out.println("No scores yet!");
+        }
+
+        System.out.println("----------------------------------------------------\n");
     }
 
     public static void dungeon(Player p, ArrayList<Boss> bosses, int difficulty) throws Exception {
@@ -90,16 +113,18 @@ public class Main {
         }
     }
 
+
+    //Boss fight
     public static int bossFight(Player p, Boss b, int dungeonPercent) {
         System.out.println("\nYou encounter a " + b.getName() + "!");
         System.out.println("The " + b.getName() + " has " + b.getHealth() + " health.");
         System.out.println("The " + b.getName() + " has " + b.getDamage() + " damage.");
 
-        dungeonPercent += (5 + fight(p, b, dungeonPercent));
 
+        dungeonPercent += (fight(p, b, dungeonPercent));
+        //returns not different dungeon percent than usual (10)
         return dungeonPercent;
     }
-
 
     public static int fight(Player p, Mobs mob, int dungeonPercent) {
 
@@ -125,8 +150,8 @@ public class Main {
                         System.out.println("You have " + p.getHealth() + " health left.\n");
                     } else {
                         System.out.println("You killed the " + mob.getName() + "!");
-                        System.out.println("You are now " + (dungeonPercent + 5) + "% though the dungeon.");
-                        return 5;
+                        System.out.println("You are now " + (dungeonPercent + 10) + "% though the dungeon.");
+                        return 10;
                     }
                     break;
                 case "use shield":
@@ -154,15 +179,13 @@ public class Main {
 
     public static void endGame(String mode) {
         if (mode.equals("death")) {
-            System.out.println("You died.");
-            System.out.println("Game Over.");
-            System.exit(0);
+            System.out.println("You died.\nGame Over.");
         } else if (mode.equals("win")) {
-            System.out.println("You win!");
-            System.exit(0);
+            System.out.println("You Won!");
         } else {
             throw new IllegalArgumentException("Invalid mode");
         }
+        System.exit(0);
     }
 
     public static Mobs randomEvent(Player p, int difficulty) throws Exception{
@@ -220,16 +243,30 @@ public class Main {
     }
 
     public static void printToFile(Player p, int dungeonPercent) {
-        System.out.println("Saving game...");
+        System.out.println("Saving game...\n");
         try {
             FileWriter fw = new FileWriter("stats.csv", true);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter out = new PrintWriter(bw);
             out.println(p.toString()+","+dungeonPercent);
-
             out.close();
         } catch (IOException e) {
             System.out.println("Error writing to file.");
         }
+    }
+
+    public static String scoreboardToString(List<List<String>> scoreboard){
+               StringBuilder sb = new StringBuilder();
+               for (List<String> row : scoreboard) {
+                   for (String col : row) {
+                       if (row.indexOf(col) == row.size() - 1) {
+                           sb.append(col);
+                       } else {
+                           sb.append(col).append(", ");
+                       }
+                   }
+                   sb.append("\n");
+               }
+               return sb.toString();
     }
 }
