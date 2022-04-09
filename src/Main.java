@@ -104,45 +104,44 @@ public class Main {
     public static int fight(Player p, Mobs mob, int dungeonPercent) {
 
         System.out.println("\nThe " + mob.getName() + " has " + mob.getHealth() + " health.");
+        label:
         while (mob.getHealth() > 0 && p.getHealth() > 0) {
 
             System.out.println("What do you want to do? (attack, use shield, run)");
             Scanner input = new Scanner(System.in);
             String choice = input.nextLine();
 
-            if (choice.equals("attack")) {
-                mob.takeDamage(p.attack());
-                System.out.println("You attack the " + mob.getName() + "!");
-                System.out.println(p.attack() + " damage dealt.");
+            switch (choice) {
+                case "attack":
+                    mob.takeDamage(p.attack());
+                    System.out.println("You attack the " + mob.getName() + "!");
+                    System.out.println(p.attack() + " damage dealt.");
 
-                if (mob.getHealth() > 0) {
-                    System.out.println("The " + mob.getName() + " has " + mob.getHealth() + " health left.");
-                    p.takeDamage(mob.attack());
-                    System.out.println("The " + mob.getName() + " attacks you!");
-                    System.out.println(mob.attack() + " damage taken.");
-                    System.out.println("You have " + p.getHealth() + " health left.\n");
-                }
-                else {
-                    System.out.println("You killed the " + mob.getName() + "!");
-                    System.out.println("You are now " + (dungeonPercent + 5) + "% though the dungeon.");
-                    return 5;
-                }
-            }
-
-            else if (choice.equals("use shield")) {
-                if (p.hasShield()) {
-                    p.useShield();
-                } else {
-                    System.out.println("You don't have a shield.");
-                }
-            }
-
-            else if (choice.equals("run")) {
-                    System.out.println("You run away.");
-                    break;
+                    if (mob.getHealth() > 0) {
+                        System.out.println("The " + mob.getName() + " has " + mob.getHealth() + " health left.");
+                        p.takeDamage(mob.attack());
+                        System.out.println("The " + mob.getName() + " attacks you!");
+                        System.out.println(mob.attack() + " damage taken.");
+                        System.out.println("You have " + p.getHealth() + " health left.\n");
+                    } else {
+                        System.out.println("You killed the " + mob.getName() + "!");
+                        System.out.println("You are now " + (dungeonPercent + 5) + "% though the dungeon.");
+                        return 5;
                     }
-            else {
-                System.out.println("Invalid input.");
+                    break;
+                case "use shield":
+                    if (p.hasShield()) {
+                        p.useShield();
+                    } else {
+                        System.out.println("You don't have a shield.");
+                    }
+                    break;
+                case "run":
+                    System.out.println("You run away.");
+                    break label;
+                default:
+                    System.out.println("Invalid input.");
+                    break;
             }
         }
 

@@ -4,7 +4,7 @@ import java.util.Arrays;
 public class Player{
     private final String name;
     private Health health;
-    private ArrayList<Item> inventory = new ArrayList<>();
+    private ArrayList<Item> inventory;
     private int damageBoost;
 
     public Player(){
@@ -30,15 +30,19 @@ public class Player{
     }
 
     public void useItem(String item) throws Exception{
-        if (item.equals("Health Potion")){
-            this.health.heal(20);
+        switch (item) {
+            case "Health Potion":
+                this.health.heal(20);
+                break;
+            case "Strength Potion":
+                this.damageBoost += 0.5;
+                break;
+            case "Poison Potion":
+                this.health.damage(10);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid item");
         }
-        else if (item.equals("Strength Potion")){
-            this.damageBoost += 0.5;
-        }
-        else if (item.equals("Poison Potion")){
-            this.health.damage(10);
-        } else throw new IllegalArgumentException("Invalid item");
     }
 
     public void heal(int value){
@@ -89,15 +93,10 @@ public class Player{
 
 
     public boolean hasShield() {
-        if (inventory.get(1).getName().equals("EMPTY")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !inventory.get(1).getName().equals("EMPTY");
     }
 
     public String toString(){
-
         return this.name + "," +this.health.getHealth() + ","+this.inventory.get(0).getDamage() + "," + this.damageBoost;
     }
 
