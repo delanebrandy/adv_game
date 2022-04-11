@@ -67,6 +67,12 @@ public class Player{
         }else {System.out.println("You can't replace your weapon with a weaker one");}
     }
 
+    public void replaceWeapon(Item item){
+        if (this.inventory.get(0).getDamage()<(item.getDamage())){
+            this.inventory.set(0, item);
+        }else {System.out.println("You can't replace your weapon with a weaker one");}
+    }
+
     public ArrayList<Item> getItems(){
         return this.inventory;
     }
