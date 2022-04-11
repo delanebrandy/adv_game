@@ -1,4 +1,6 @@
 # Project exclude paths
 /out/
 /.idea/
+/GridLayoutDemo.java/
+/App.java/
 /.gitignore/
