@@ -1,11 +1,11 @@
 import java.io.*;
 import java.util.*;
-import java.util.ArrayList;
+import javax.swing.*;
 
 import static java.lang.Thread.sleep;
 
 
-public class Main {
+public class Main{
 
     public static void main(String[] args) throws Exception {
 
@@ -49,6 +49,7 @@ public class Main {
         +"\nWhat is your name? ");
 
         System.out.println(welcomeMessage);
+
         Scanner nameInput = new Scanner(System.in);
         return nameInput.nextLine();
     }
