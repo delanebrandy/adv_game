@@ -1,11 +1,9 @@
 import java.io.*;
 import java.util.*;
-import javax.swing.*;
-
+import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
-
-public class Main{
+public class Main {
 
     public static void main(String[] args) throws Exception {
 
@@ -27,8 +25,8 @@ public class Main{
 
         //Bosses
         ArrayList<Boss> bosses = new ArrayList<>();
-        Boss b1 = new Boss("Dragon", 25, 200, "Energy Sword");
-        Boss b2 = new Boss("Ogre", 40, 200, "Dragonbane");
+        Boss b1 = new Boss("Dragon", 25, 100, "Energy Sword", 35);
+        Boss b2 = new Boss("Ogre", 40, 200, "Dragonbane", 50);
 
         bosses.add(b1);
         bosses.add(b2);
@@ -49,7 +47,6 @@ public class Main{
         +"\nWhat is your name? ");
 
         System.out.println(welcomeMessage);
-
         Scanner nameInput = new Scanner(System.in);
         return nameInput.nextLine();
     }
@@ -123,6 +120,9 @@ public class Main{
 
 
         dungeonPercent += (fight(p, b, dungeonPercent));
+        p.replaceWeapon(b.getItemDrop());
+
+
         //returns not different dungeon percent than usual (10)
         return dungeonPercent;
     }
@@ -190,17 +190,48 @@ public class Main{
     }
 
     public static Mobs randomEvent(Player p, int difficulty) throws Exception{
+        int BOUND = 101;
+
+        //if the player has a boss drop weapon, the chance of getting a weapon drop is 0%
+        if (p.getWeaponName().equals("Energy Sword") || p.getWeaponName().equals("Energy Bow")) {
+            BOUND = 91;
+        }
+
         Random rand = new Random();
-        int random = rand.nextInt(101);
+        int random = rand.nextInt(BOUND);
+
 
         //30% chance of finding a health potion
         if (random < 30) {
             p.useItem("Health Potion");
             System.out.println("You found a health potion!\nYou drank it :)\nYou have " + p.getHealth() + " health left.");
         }
+        //5% chance of finding a poison potion (-10 HP)
+        else if (random < 35) {
+            System.out.println("You found a Potion :)!\nYou drank it :)");
+            p.useItem("Poison Potion");
+            System.out.println("You have " + p.getHealth() + " health left lol.");
+        }
+
+        //5% chance of finding a Strength Potion (+0.5 damage boost)
+        else if (random < 40) {
+            System.out.println("You found a Strength Potion!");
+            p.useItem("Strength Potion");
+        }
+        //45% change of finding a monster
+        else if (random < 85) {
+            System.out.println("A monster has appeared!");
+            return new Mobs(difficulty);
+        }
+        //5% change of finding nothing
+        else if (random < 90) {
+            System.out.println("You found nothing lol.");
+        }
+
+        //Weapon chances
 
         //5% chance of finding an Axe
-        else if (random < 35) {
+        else if (random < 95) {
             if ((p.getWeaponName().equals("Axe"))) {
                 randomEvent(p, difficulty);}
             else{
@@ -208,14 +239,9 @@ public class Main{
                 p.replaceWeapon("Axe");}
                 System.out.println("You now do " + p.attack() + " damage.");
         }
-        //45% change of finding a monster
-        else if (random < 80) {
-            System.out.println("A monster has appeared!");
-            return new Mobs(difficulty);
-        }
 
         //5% chance of finding a Long Sword
-        else if (random < 85) {
+        else if (random < 100) {
         if (p.getWeaponName().equals("Long Sword")) {
                 randomEvent(p, difficulty);}
             else{
@@ -223,26 +249,15 @@ public class Main{
                 p.replaceWeapon("Long Sword");}
         }
 
-        //5% chance of finding a poison potion (-10 HP)
-        else if (random < 90) {
-            System.out.println("You found a Potion :)!\nYou drank it :)");
-            p.useItem("Poison Potion");
-            System.out.println("You have " + p.getHealth() + " health left lol.");
-        }
-
-        //4% chance of finding a Strength Potion (+0.5 damage boost)
-        else if (random < 94) {
-            System.out.println("You found a Strength Potion!");
-            p.useItem("Strength Potion");
-        }
-
-        //6% change of finding nothing
+        //5% change of finding nothing
         else {
             System.out.println("You found nothing lol.");
         }
         return null;
     }
 
+
+    //Prints the player's stats to a file
     public static void printToFile(Player p, int dungeonPercent) {
         System.out.println("Saving game...\n");
         try {
@@ -256,6 +271,7 @@ public class Main{
         }
     }
 
+    //Reads the player's stats from a file and converts them to a String
     public static String scoreboardToString(List<List<String>> scoreboard){
                StringBuilder sb = new StringBuilder();
                for (List<String> row : scoreboard) {
@@ -271,3 +287,4 @@ public class Main{
                return sb.toString();
     }
 }
+
