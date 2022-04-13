@@ -18,7 +18,7 @@ public class Player{
 
     public Player(String name){
         this.name = name;
-        this.inventory = new ArrayList<>(Arrays.asList(new Item("Stick"), new Item("Shield")));
+        this.inventory = new ArrayList<>(Arrays.asList(new Item("Stick"), new Item("EMPTY")));
         this.health = new Health();
         this.damageBoost = 1;
 
