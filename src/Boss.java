@@ -1,4 +1,4 @@
-public class Boss extends Mobs {
+public class Boss extends Mobs  {
     public static int counter = 0; //counter for the boss number
     public final int bossNumber;
     private final Item itemDrop;

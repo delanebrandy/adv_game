@@ -10,6 +10,9 @@ public class Health {
         this.health = healthValue;
     }
 
+    public void setHealth(double healthValue){
+        this.health = healthValue;
+    }
     public double getHealth() {
         return this.health;
     }

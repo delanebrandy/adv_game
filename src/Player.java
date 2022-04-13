@@ -1,25 +1,22 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Player{
-    private final String name;
-    private Health health;
+public class Player extends Entity{
+
     private ArrayList<Item> inventory;
     private int damageBoost;
     private boolean shieldActive;
     private double damageReduction =1;
 
     public Player(){
+        super("Player");
         this.inventory = new ArrayList<>(Arrays.asList(new Item("Stick"), new Item("EMPTY")));
-        this.health = new Health();
-        this.name = "Player";
         this.damageBoost = 1;
     }
 
     public Player(String name){
-        this.name = name;
+        super(name);
         this.inventory = new ArrayList<>(Arrays.asList(new Item("Stick"), new Item("EMPTY")));
-        this.health = new Health();
         this.damageBoost = 1;
 
     }
@@ -43,8 +40,6 @@ public class Player{
 
     public void shieldChange(){
         this.shieldActive = !this.shieldActive;
-
-
     }
 
     public String getActiveShield(){
@@ -60,33 +55,25 @@ public class Player{
     public void useItem(String item){
         switch (item) {
             case "Health Potion":
-                this.health.heal(20);
+                this.heal(20);
                 break;
             case "Strength Potion":
                 this.damageBoost += 0.5;
                 break;
             case "Poison Potion":
-                this.health.damage(10);
+                this.takeDamage(10);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid item");
         }
     }
 
-    public void heal(int value){
-        this.health.heal(value);
-    }
-
     public void takeDamage(double value){
         if (this.shieldActive){
-            this.health.damage(value/this.damageReduction);
+            this.damage(value/this.damageReduction);
         }
-        else {this.health.damage(value);
+        else {this.damage(value);
         }
-    }
-
-    public double getHealth(){
-        return this.health.getHealth();
     }
 
     public int getItemDamage(String name) {
@@ -115,9 +102,6 @@ public class Player{
         return this.inventory;
     }
 
-    public String getName(){
-        return this.name;
-    }
     public String getWeaponName(){
         return inventory.get(0).getName();
     }
@@ -137,7 +121,7 @@ public class Player{
     }
 
     public String toString(){
-        return this.name + "," +this.inventory.get(0).getName() + "," +this.inventory.get(0).getDamage() + "," + this.damageBoost;
+        return this.getName() + "," +this.inventory.get(0).getName() + "," +this.inventory.get(0).getDamage() + "," + this.damageBoost;
     }
 
 

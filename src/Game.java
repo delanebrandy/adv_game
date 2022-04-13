@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -64,12 +66,13 @@ public class Game extends JFrame {
         this.infoArea.setLineWrap(true);
         this.infoArea.setWrapStyleWord(true);
 
-        this.infoArea.setFont(new Font("Courier", Font.BOLD, 17));
+        this.infoArea.setFont(new Font(null, Font.BOLD, 17));
         panel.add(this.infoArea);
         this.add(panel, BorderLayout.NORTH);
         setVisible(true);
 
-        intro();
+        scoreboardDisplay();
+
     }
 
     public void intro(){
@@ -172,6 +175,40 @@ public class Game extends JFrame {
         print(statement);
 
         Timer timer = new Timer(1500, e -> dungeon());
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    public void scoreboardDisplay(){
+        java.util.List<java.util.List<String>> records = new ArrayList<>();
+        java.util.List<java.util.List<String>> records2 = new ArrayList<>();
+
+        String display = "Scoreboard:\n\n";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("stats.csv")) ;
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                records.add(Arrays.asList(values));
+            }
+            br.close();
+
+            if (records.size() > 3) {
+                for(int i = 0; i < 3; i++){
+                    records2.add(records.get(records.size() - 1 - i));
+                }
+                print(display+scoreboardToString(records2));
+            }
+            else{
+                print(display+scoreboardToString(records));
+            }
+        }
+        catch (IOException e) {
+            print("No scores yet!");
+        }
+
+
+        Timer timer = new Timer(2000, e -> intro());
         timer.setRepeats(false);
         timer.start();
     }
@@ -337,6 +374,7 @@ public class Game extends JFrame {
         if (mode) {
             JOptionPane.showMessageDialog(new JFrame(), "You have died\nGame Over :)", "You Died",
                     JOptionPane.INFORMATION_MESSAGE);
+            printToFile();
             System.exit(0);
         }else {
             String[] ObjButtons = {"Keep Playing","New Game", "Quit"};
@@ -344,17 +382,46 @@ public class Game extends JFrame {
             if(PromptResult==0) {
                 JOptionPane.getRootFrame().dispose();
             } else if (PromptResult==1) {
+                printToFile();
                 dispose();
                 new Game();
             } else if (PromptResult==2) {
+                printToFile();
                 System.exit(0);
             }
         }
     }
 
+    //Prints the player's stats to a file
+    public void printToFile() {
+        try {
+            FileWriter fw = new FileWriter("stats.csv", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw);
+            out.println(player.toString()+","+dungeonPercent);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Error writing to file.");
+        }
+    }
+
+    //Reads the player's stats from a file and converts them to a String
+    public String scoreboardToString(java.util.List<java.util.List<String>> scoreboard){
+        StringBuilder sb = new StringBuilder();
+        for (java.util.List<String> row : scoreboard) {
+            for (String col : row) {
+                if (row.indexOf(col) == row.size() - 1) {
+                    sb.append(col);
+                } else {
+                    sb.append(col).append(", ");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 
     public static void main(String[] args){
         new Game();
-
     }
 }

@@ -1,39 +1,28 @@
-public class Mobs {
-    private final Health health;
-    private final String name;
+public class Mobs extends Entity {
     private final int damage;
 
-
     public Mobs(String name, int damage, int health) {
-        this.name = name;
+        super(name, health);
         this.damage = damage;
-        this.health = new Health(health);
     }
     public Mobs(int level) {
+        super(null, 40);
         if (level == 1) {
-            this.name = "Goblin";
+            setEntity("Goblin", 40);
             this.damage = 20;
-            this.health = new Health(40);
         }
         else if (level == 2) {
-            this.name = "Orc";
+            setEntity("Orc", 60);
             this.damage = 25;
-            this.health = new Health(60);
+
         }
         else if (level == 3) {
-            this.name = "Troll";
+            setEntity("Troll", 80);
             this.damage = 30;
-            this.health = new Health(80);
         }
         else {
-            this.name = "Giant";
             this.damage = 40;
-            this.health = new Health(100);
         }
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getDamage() {
@@ -44,15 +33,4 @@ public class Mobs {
         return this.damage;
     }
 
-    public double getHealth() {
-        if (this.health.getHealth() > 0) {
-        return this.health.getHealth();
-        } else {
-            return 0;
-        }
-    }
-
-    public void takeDamage(int damage) {
-        this.health.damage(damage);
-    }
 }
