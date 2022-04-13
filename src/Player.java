@@ -6,6 +6,8 @@ public class Player{
     private Health health;
     private ArrayList<Item> inventory;
     private int damageBoost;
+    private boolean shieldActive;
+    private double damageReduction =1;
 
     public Player(){
         this.inventory = new ArrayList<>(Arrays.asList(new Item("Stick"), new Item("EMPTY")));
@@ -16,20 +18,46 @@ public class Player{
 
     public Player(String name){
         this.name = name;
-        this.inventory = new ArrayList<>(Arrays.asList(new Item("Stick"), new Item("EMPTY")));
+        this.inventory = new ArrayList<>(Arrays.asList(new Item("Stick"), new Item("Shield")));
         this.health = new Health();
         this.damageBoost = 1;
+
     }
 
     public int attack(){
-            return inventory.get(0).getDamage() * damageBoost;
-    }
-    public int useShield(){
-        return inventory.get(1).getDamage();
-        //Mob attack reduction.
+        if (this.shieldActive){
+            System.out.println(this.inventory.get(1).getDamage());
+            return this.inventory.get(1).getDamage();
+        }else {
+            return this.inventory.get(0).getDamage() * damageBoost;
+        }
     }
 
-    public void useItem(String item) throws Exception{
+    public void setShield(){
+        if (getShieldName().equals("Shield")){
+            this.damageReduction = 2;
+        } else if (getShieldName().equals("Great Shield")){
+            this.damageReduction = 2.5;
+        }
+    }
+
+    public void shieldChange(){
+        this.shieldActive = !this.shieldActive;
+
+
+    }
+
+    public String getActiveShield(){
+        if (this.shieldActive){
+            return "Shield";
+        }else {
+            return "None";
+        }
+    }
+
+
+
+    public void useItem(String item){
         switch (item) {
             case "Health Potion":
                 this.health.heal(20);
@@ -48,11 +76,16 @@ public class Player{
     public void heal(int value){
         this.health.heal(value);
     }
-    public void takeDamage(int value){
-        this.health.damage(value);
+
+    public void takeDamage(double value){
+        if (this.shieldActive){
+            this.health.damage(value/this.damageReduction);
+        }
+        else {this.health.damage(value);
+        }
     }
 
-    public int getHealth(){
+    public double getHealth(){
         return this.health.getHealth();
     }
 
@@ -61,16 +94,21 @@ public class Player{
         return item.getDamage();
     }
 
-    public void replaceWeapon(String item){
-        if (this.inventory.get(0).getDamage()<(getItemDamage(item))){
-            this.inventory.set(0, new Item(item));
-        }else {System.out.println("You can't replace your weapon with a weaker one");}
+    public void replaceWeapon(String itemName){
+        if (this.inventory.get(0).getDamage()<(getItemDamage(itemName))){
+            this.inventory.set(0, new Item(itemName));
+        }else {
+            System.out.println("You can't replace your weapon with a weaker one");
+        }
+            //throw new Exception("You can't replace your weapon with a weaker one");}
     }
 
     public void replaceWeapon(Item item){
         if (this.inventory.get(0).getDamage()<(item.getDamage())){
             this.inventory.set(0, item);
-        }else {System.out.println("You can't replace your weapon with a weaker one");}
+        }else {
+            System.out.println("You can't replace your weapon with a weaker one");
+        }
     }
 
     public ArrayList<Item> getItems(){
@@ -80,7 +118,6 @@ public class Player{
     public String getName(){
         return this.name;
     }
-
     public String getWeaponName(){
         return inventory.get(0).getName();
     }
@@ -89,9 +126,6 @@ public class Player{
     }
     public int getDamage(int slot) {
         return inventory.get(slot).getDamage();
-    }
-    public String getEffect() {
-        return inventory.get(1).getEffect();
     }
     public int getDamageBoost() {
         return damageBoost;

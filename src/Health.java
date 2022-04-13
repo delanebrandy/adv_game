@@ -1,6 +1,6 @@
 public class Health {
 
-    private int health;
+    private double health;
 
     public Health(){
         this.health = 100;
@@ -10,11 +10,11 @@ public class Health {
         this.health = healthValue;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return this.health;
     }
 
-    public void damage(int value){
+    public void damage(double value){
         this.health -= value;
     }
 

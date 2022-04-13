@@ -3,12 +3,8 @@ public class Boss extends Mobs {
     public final int bossNumber;
     private final Item itemDrop;
 
-    public Boss(String name, int damage, int health, String itemDrop, int itemDamage) throws TooManyBosses{
+    public Boss(String name, int damage, int health, String itemDrop, int itemDamage){
         super(name, damage, health);
-
-        if (counter > 1) {
-            throw new TooManyBosses();
-        }
 
         this.bossNumber = counter++;
         this.itemDrop = new Item(itemDrop, itemDamage);

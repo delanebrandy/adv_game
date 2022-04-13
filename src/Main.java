@@ -3,7 +3,9 @@ import java.util.*;
 import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 
+
 public class Main {
+    public static int dungeonPercent = 0;
 
     public static void main(String[] args) throws Exception {
 
@@ -74,60 +76,35 @@ public class Main {
     public static void dungeon(Player p, ArrayList<Boss> bosses, int difficulty) throws Exception {
 
         System.out.println("You enter the dungeon.\n");
-        int dungeonPercent = 0;
 
         while (p.getHealth() > 0) {
 
-            if (dungeonPercent == 50) {
-                dungeonPercent += bossFight(p, bosses.get(0), dungeonPercent);
+            if (dungeonPercent == 0) {
+                bossFight(p, bosses.get(0));
             }
             else if (dungeonPercent == 90) {
-                dungeonPercent += bossFight(p, bosses.get(1), dungeonPercent);
+                bossFight(p, bosses.get(1));
             }
 
-            Mobs mob = randomEvent(p, difficulty);
+            randomEvent(p, difficulty);
             System.out.println("\n");
             sleep(1000);
 
-
-            if (mob != null) {
-                System.out.println("You encounter a " + mob.getName() + "!");
-                System.out.println("You have " + p.getHealth() + " health.");
-                System.out.println("You have a " + p.getWeaponName() + ".\n");
-
-                System.out.println("What do you do? (Run or fight)");
-
-                Scanner input = new Scanner(System.in);
-                String choice = input.nextLine();
-
-                if (choice.equals("fight") || choice.equals("attack")) {
-                    dungeonPercent += fight(p, mob, dungeonPercent);
-                } else if (choice.equals("run")) {
-                    System.out.println("You run away from the " + mob.getName() + ".\n");
-                } else {
-                    System.out.println("Invalid input. Input taken as run\n");
-                }
-            }
         }
     }
 
 
     //Boss fight
-    public static int bossFight(Player p, Boss b, int dungeonPercent) {
-        System.out.println("\nYou encounter a " + b.getName() + "!");
-        System.out.println("The " + b.getName() + " has " + b.getHealth() + " health.");
-        System.out.println("The " + b.getName() + " has " + b.getDamage() + " damage.");
+    public static void bossFight(Player p, Boss b) {
 
-
-        dungeonPercent += (fight(p, b, dungeonPercent));
+        fight(p, b);
         p.replaceWeapon(b.getItemDrop());
-
-
-        //returns not different dungeon percent than usual (10)
-        return dungeonPercent;
     }
 
-    public static int fight(Player p, Mobs mob, int dungeonPercent) {
+    public static void fight(Player p, Mobs mob) {
+        System.out.println("You encounter a " + mob.getName() + "!");
+        System.out.println("You have " + p.getHealth() + " health.");
+        System.out.println("You have a " + p.getWeaponName() + ".\n");
 
         System.out.println("\nThe " + mob.getName() + " has " + mob.getHealth() + " health.");
         label:
@@ -150,14 +127,17 @@ public class Main {
                         System.out.println(mob.attack() + " damage taken.");
                         System.out.println("You have " + p.getHealth() + " health left.\n");
                     } else {
+                        dungeonPercent += 10;
                         System.out.println("You killed the " + mob.getName() + "!");
-                        System.out.println("You are now " + (dungeonPercent + 10) + "% though the dungeon.");
-                        return 10;
+                        System.out.println("You are now " + dungeonPercent + "% though the dungeon.");
                     }
                     break;
-                case "use shield":
+                case "shield":
                     if (p.hasShield()) {
-                        p.useShield();
+                        System.out.println("You use your shield!");
+                        p.setShield();
+                        p.shieldChange();
+
                     } else {
                         System.out.println("You don't have a shield.");
                     }
@@ -172,10 +152,9 @@ public class Main {
         }
 
         if (p.getHealth() <= 0) {
-            printToFile(p, dungeonPercent);
+            printToFile(p);
             endGame("death");
         }
-        return 0;
     }
 
     public static void endGame(String mode) {
@@ -189,7 +168,7 @@ public class Main {
         System.exit(0);
     }
 
-    public static Mobs randomEvent(Player p, int difficulty) throws Exception{
+    public static Mobs randomEvent(Player p, int difficulty){
         int BOUND = 101;
 
         //if the player has a boss drop weapon, the chance of getting a weapon drop is 0%
@@ -221,7 +200,7 @@ public class Main {
         //45% change of finding a monster
         else if (random < 85) {
             System.out.println("A monster has appeared!");
-            return new Mobs(difficulty);
+            fight(p,new Mobs(difficulty));
         }
         //5% change of finding nothing
         else if (random < 90) {
@@ -258,7 +237,7 @@ public class Main {
 
 
     //Prints the player's stats to a file
-    public static void printToFile(Player p, int dungeonPercent) {
+    public static void printToFile(Player p) {
         System.out.println("Saving game...\n");
         try {
             FileWriter fw = new FileWriter("stats.csv", true);
