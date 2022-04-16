@@ -1,3 +1,9 @@
+/* A simple adventure game.
+*
+*
+* */
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -6,7 +12,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-
 
 public class Game extends JFrame {
 
@@ -19,13 +24,47 @@ public class Game extends JFrame {
     private int dungeonPercent = 0;
     private String buttonText = "Use Shield";
 
+
+    //Sends any text to the infoArea
     public void print(String text){
         infoArea.setText("\n\n"+text);
     }
+
+    //appends ant text to the infoArea
     public void addPrint(String text){
         infoArea.append(text);
     }
 
+    //Prints the player's stats to a file
+    public void printToFile() {
+        try {
+            FileWriter fw = new FileWriter("stats.csv", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw);
+            out.println(player.toString()+","+dungeonPercent);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("Error writing to file.");
+        }
+    }
+
+    //Reads the player's stats from a file and converts them to a String
+    public String scoreboardToString(java.util.List<java.util.List<String>> scoreboard){
+        StringBuilder sb = new StringBuilder();
+        for (java.util.List<String> row : scoreboard) {
+            for (String col : row) {
+                if (row.indexOf(col) == row.size() - 1) {
+                    sb.append(col);
+                } else {
+                    sb.append(col).append(", ");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    //Changes the text on the shield button depending on the player's current status
     public void setButtonText(){
         if (this.buttonText.equals("Use Shield")){
             this.buttonText = "Disable Shield";
@@ -34,6 +73,8 @@ public class Game extends JFrame {
         }
     }
 
+
+    //Creates the GUI and starts the game
     public Game(){
         super("Dungeon Battle");
 
@@ -50,9 +91,18 @@ public class Game extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 String[] ObjButtons = {"Yes","No"};
-                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit?","Online Examination System",JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
+                int PromptResult = JOptionPane.showOptionDialog(null,"Are you sure you want to exit?","Quit",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.WARNING_MESSAGE,null,ObjButtons,ObjButtons[1]);
                 if(PromptResult==JOptionPane.YES_OPTION) {
-                    System.exit(0);
+                    try {
+                        player.setCompleted(false);
+                        printToFile();
+                        System.exit(0);
+                    }
+                    //if player has not yet been created, exit without saving
+                    catch (Exception e1) {
+                        System.exit(0);
+                    }
                 }
             }
         });
@@ -74,6 +124,41 @@ public class Game extends JFrame {
         scoreboardDisplay();
 
     }
+
+    //Creates the scoreboard display and displays it for 20 seconds
+    public void scoreboardDisplay(){
+        java.util.List<java.util.List<String>> records = new ArrayList<>();
+        java.util.List<java.util.List<String>> records2 = new ArrayList<>();
+
+        String display = "Scoreboard:\n\n Name, Weapon, Shield, Damage Boost, Completed?, Dungeon %\n\n";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("stats.csv")) ;
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                records.add(Arrays.asList(values));
+            }
+            br.close();
+
+            if (records.size() > 3) {
+                for(int i = 0; i < 3; i++){
+                    records2.add(records.get(records.size() - 1 - i));
+                }
+                print(display+scoreboardToString(records2));
+            }
+            else{
+                print(display+scoreboardToString(records));
+            }
+        }
+        catch (IOException e) {
+            print("No scores yet!");
+        }
+
+        Timer timer = new Timer(2000, e -> intro());
+        timer.setRepeats(false);
+        timer.start();
+    }
+
 
     public void intro(){
         print(
@@ -179,40 +264,6 @@ public class Game extends JFrame {
         timer.start();
     }
 
-    public void scoreboardDisplay(){
-        java.util.List<java.util.List<String>> records = new ArrayList<>();
-        java.util.List<java.util.List<String>> records2 = new ArrayList<>();
-
-        String display = "Scoreboard:\n\n";
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("stats.csv")) ;
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                records.add(Arrays.asList(values));
-            }
-            br.close();
-
-            if (records.size() > 3) {
-                for(int i = 0; i < 3; i++){
-                    records2.add(records.get(records.size() - 1 - i));
-                }
-                print(display+scoreboardToString(records2));
-            }
-            else{
-                print(display+scoreboardToString(records));
-            }
-        }
-        catch (IOException e) {
-            print("No scores yet!");
-        }
-
-
-        Timer timer = new Timer(2000, e -> intro());
-        timer.setRepeats(false);
-        timer.start();
-    }
-
     public void dungeon(){
 
         if (dungeonPercent >= 100){
@@ -233,6 +284,8 @@ public class Game extends JFrame {
         timer.start();
     }
 
+
+    //Fight event, does not end until player or the mob dies
     public void fight(Mobs mob) {
         this.bottomPanel.removeAll();
 
@@ -277,16 +330,29 @@ public class Game extends JFrame {
                 if (mob instanceof Boss) {
                     Boss boss = (Boss) mob;
                     this.player.replaceWeapon(boss.getItemDrop());
+                    this.player.addShield(new Item("Shield"));
+                    print("You found a " + boss.getItemDrop().getName() + " and a shield!");
+
+                    if (boss.getBossNumber() == 2) {
+                        this.player.addShield(new Item("Great Shield"));
+                        this.player.replaceWeapon(new Item("Dragonbane",50));
+                    }
+
                 }
             }
         });
 
         b2.addActionListener(e -> {
-            this.player.setShield();
-            this.player.shieldChange();
-            setButtonText();
+            try {
+                this.player.setShield();
+                this.player.shieldChange();
+                setButtonText();
+                fight(mob);
+            } catch (Exception e1) {
+                JOptionPane.showMessageDialog(new JFrame(), "You dont have a shield!", "lol",
+                        JOptionPane.ERROR_MESSAGE);
+            }
             SwingUtilities.updateComponentTreeUI(this.bottomPanel);
-            fight(mob);
         });
 
         b3.addActionListener(e -> {
@@ -297,14 +363,15 @@ public class Game extends JFrame {
 
         this.bottomPanel.add(b1);
         this.bottomPanel.add(b2);
-        if (!(mob instanceof Boss)) {
-            this.bottomPanel.add(b3);
+        this.bottomPanel.add(b3);
+        if (mob instanceof Boss) {
+            this.bottomPanel.remove(b3);
+            SwingUtilities.updateComponentTreeUI(this.bottomPanel);
         }
         this.bottomPanel.setVisible(true);
-
     }
 
-
+    //Generates a random event and displays it
     public void event(){
         int BOUND = 101;
 
@@ -336,6 +403,7 @@ public class Game extends JFrame {
             dungeonWait("You found a Strength Potion!");
         }
         //45% change of finding a monster
+        //Generates a mob (with a difficulty level) and sends it to the fight method
         else if (random < 85) {
             print("A monster has appeared!");
             fight(new Mobs(this.gameMode));
@@ -352,10 +420,11 @@ public class Game extends JFrame {
             if ((this.player.getWeaponName().equals("Axe"))) {
                 event();}
             else{
-
-                this.player.replaceWeapon("Axe");
-                dungeonWait("You found an Axe!"+"\nYou now do " + this.player.attack() + " damage.");
-
+                try {
+                    this.player.replaceWeapon("Axe");
+                    dungeonWait("You found an Axe!"+"\nYou now do " + this.player.attack() + " damage.");
+                } catch (Exception e) {
+                    dungeonWait("You found an Axe!\n But you cant replace your weapon with this one.");}
                 }
         }
 
@@ -364,9 +433,13 @@ public class Game extends JFrame {
             if (this.player.getWeaponName().equals("Long Sword")) {
                 event();}
             else{
-                this.player.replaceWeapon("Long Sword");
-                dungeonWait("You found a Long Sword!"+"\nYou now do " + this.player.attack() + " damage.");
+                try {
+                    this.player.replaceWeapon("Long Sword");
+                    dungeonWait("You found a Long Sword!"+"\nYou now do " + this.player.attack() + " damage.");
                 }
+                catch (Exception e) {
+                    dungeonWait("You found a Long Sword\n But you cant replace your weapon with this one.");}
+            }
         }
     }
 
@@ -390,35 +463,6 @@ public class Game extends JFrame {
                 System.exit(0);
             }
         }
-    }
-
-    //Prints the player's stats to a file
-    public void printToFile() {
-        try {
-            FileWriter fw = new FileWriter("stats.csv", true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter out = new PrintWriter(bw);
-            out.println(player.toString()+","+dungeonPercent);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("Error writing to file.");
-        }
-    }
-
-    //Reads the player's stats from a file and converts them to a String
-    public String scoreboardToString(java.util.List<java.util.List<String>> scoreboard){
-        StringBuilder sb = new StringBuilder();
-        for (java.util.List<String> row : scoreboard) {
-            for (String col : row) {
-                if (row.indexOf(col) == row.size() - 1) {
-                    sb.append(col);
-                } else {
-                    sb.append(col).append(", ");
-                }
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
     }
 
     public static void main(String[] args){

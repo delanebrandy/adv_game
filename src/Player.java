@@ -7,6 +7,7 @@ public class Player extends Entity{
     private int damageBoost;
     private boolean shieldActive;
     private double damageReduction =1;
+    private boolean completed;
 
     public Player(){
         super("Player");
@@ -23,7 +24,6 @@ public class Player extends Entity{
 
     public int attack(){
         if (this.shieldActive){
-            System.out.println(this.inventory.get(1).getDamage());
             return this.inventory.get(1).getDamage();
         }else {
             return this.inventory.get(0).getDamage() * damageBoost;
@@ -42,15 +42,9 @@ public class Player extends Entity{
         this.shieldActive = !this.shieldActive;
     }
 
-    public String getActiveShield(){
-        if (this.shieldActive){
-            return "Shield";
-        }else {
-            return "None";
-        }
+    public void addShield(Item shield){
+        this.inventory.set(1, shield);
     }
-
-
 
     public void useItem(String item){
         switch (item) {
@@ -81,20 +75,18 @@ public class Player extends Entity{
         return item.getDamage();
     }
 
-    public void replaceWeapon(String itemName){
+    public void replaceWeapon(String itemName) throws Exception {
         if (this.inventory.get(0).getDamage()<(getItemDamage(itemName))){
             this.inventory.set(0, new Item(itemName));
         }else {
-            System.out.println("You can't replace your weapon with a weaker one");
+            throw new Exception("You can't replace your weapon with a weaker one");
         }
-            //throw new Exception("You can't replace your weapon with a weaker one");}
     }
 
-    public void replaceWeapon(Item item){
+
+    public void replaceWeapon(Item item) {
         if (this.inventory.get(0).getDamage()<(item.getDamage())){
             this.inventory.set(0, item);
-        }else {
-            System.out.println("You can't replace your weapon with a weaker one");
         }
     }
 
@@ -108,21 +100,19 @@ public class Player extends Entity{
     public String getShieldName(){
         return inventory.get(1).getName();
     }
-    public int getDamage(int slot) {
-        return inventory.get(slot).getDamage();
-    }
-    public int getDamageBoost() {
-        return damageBoost;
-    }
-
 
     public boolean hasShield() {
         return !inventory.get(1).getName().equals("EMPTY");
     }
 
-    public String toString(){
-        return this.getName() + "," +this.inventory.get(0).getName() + "," +this.inventory.get(0).getDamage() + "," + this.damageBoost;
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
+
+    public String toString(){
+        return this.getName() + "," +this.inventory.get(0).getName() + "," + this.inventory.get(1).getName() + "," + this.damageBoost + "," + this.completed;
+    }
+
 
 
 }

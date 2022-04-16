@@ -25,10 +25,6 @@ public class Mobs extends Entity {
         }
     }
 
-    public int getDamage() {
-        return this.damage;
-    }
-
     public int attack() {
         return this.damage;
     }

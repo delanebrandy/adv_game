@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="40.5" y="-34.5">Item</node>
+    <node x="277.0" y="-294.5">Entity</node>
+    <node x="276.0" y="-154.5">Player</node>
+    <node x="400.0" y="-34.5">Boss</node>
+    <node x="276.5" y="-34.5">Game</node>
+    <node x="154.5" y="-34.5">Health</node>
+    <node x="396.5" y="-154.5">Mobs</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Player" target="Entity" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="Mobs" target="Entity" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.5" />
+      <point x="440.0" y="-200.0" />
+      <point x="320.0" y="-200.0" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="Boss" target="Mobs" relationship="GENERALIZATION">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="1.0" showDependencies="false" x="262.00000000000006" y="-149.99999999999994" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>Project Files</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
