@@ -1,7 +1,11 @@
-/* A simple adventure game.
-*
-*
-* */
+/**
+ * A simple adventure game where the player fights
+ * though a dungeon until they kill the final boss
+ *
+ * @author  Delane Brandy
+ * @version 1.0
+ * @since   2022-04-17
+ */
 
 
 import javax.swing.*;
@@ -38,6 +42,7 @@ public class Game extends JFrame {
     //Prints the player's stats to a file
     public void printToFile() {
         try {
+            //prints data to .csv file -- appending or creating a new file if none is found.
             FileWriter fw = new FileWriter("stats.csv", true);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter out = new PrintWriter(bw);
@@ -110,6 +115,8 @@ public class Game extends JFrame {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
 
+
+        //Sets up bottom panel
         JPanel panel = new JPanel();
         this.infoArea.setBackground(this.getBackground());
         this.infoArea.setEditable(false);
@@ -159,7 +166,7 @@ public class Game extends JFrame {
         timer.start();
     }
 
-
+    //sends intro message to display with name input box.
     public void intro(){
         print(
                 "Welcome to the Dungeon Battle!\n\n" +
@@ -182,6 +189,7 @@ public class Game extends JFrame {
 
         button.addActionListener(e -> {
             String name = input.getText();
+            //error checking -- if blank then has error pop up
             if(name.equals("")){
                 JOptionPane.showMessageDialog(new JFrame(), "You must enter a name!", "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -190,7 +198,7 @@ public class Game extends JFrame {
             else{
                 this.player = new Player(name);
                 this.bottomPanel.setVisible(false);
-                modeSelect();
+                modeSelect(); //moves onto next method if valid input
             }
         });
 
@@ -201,6 +209,7 @@ public class Game extends JFrame {
         this.add(this.bottomPanel, BorderLayout.CENTER);
     }
 
+    //Game difficulty selector -- sets the class variable gameMode
     public void modeSelect(){
         this.bottomPanel.removeAll();
 
@@ -231,7 +240,8 @@ public class Game extends JFrame {
                 print("\nYou have chosen Hard mode.\n\nGood luck!");
                 addBosses();
             }
-            else{
+            //error checking
+            else {
                 this.bottomPanel.setVisible(true);
                 JOptionPane.showMessageDialog(new JFrame(), "Please select a difficulty!", "Error",
                         JOptionPane.ERROR_MESSAGE);
@@ -246,16 +256,18 @@ public class Game extends JFrame {
 
     }
 
+    //add bosses to class array
     public void addBosses(){
         Boss b1 = new Boss("Dragon", 25, 100, "Energy Sword", 35);
         Boss b2 = new Boss("Ogre", 40, 200, "Dragonbane", 50);
 
         bosses.add(b1);
         bosses.add(b2);
-
+        //send game to main dungeon loop -- game setup complete
         dungeon();
     }
 
+    //Sets the display to wait for 1500 milliseconds then moves onto dungeon loop
     public void dungeonWait(String statement){
         print(statement);
 
@@ -264,6 +276,7 @@ public class Game extends JFrame {
         timer.start();
     }
 
+    //simple display iteration & game progress check
     public void dungeon(){
 
         if (dungeonPercent >= 100){
@@ -277,7 +290,7 @@ public class Game extends JFrame {
         }
         this.eventCounter++;
 
-
+        //Sets the display to wait for 1000 milliseconds then moves onto dungeon loop
         Timer timer = new Timer(1000, e ->
                 event());
         timer.setRepeats(false);
@@ -285,7 +298,7 @@ public class Game extends JFrame {
     }
 
 
-    //Fight event, does not end until player or the mob dies
+    //Fight event, does not end until player or the mob dies -- recursive loop
     public void fight(Mobs mob) {
         this.bottomPanel.removeAll();
 
@@ -297,7 +310,6 @@ public class Game extends JFrame {
         if (this.player.getHealth() <= 0 ) {
             endGame(true);
         } else if (mob.getHealth() <= 0) {
-
             print("\nYou defeated the " + mob.getName() + "!");
             this.dungeonPercent += 10;
         }
@@ -327,16 +339,19 @@ public class Game extends JFrame {
                 this.dungeonPercent += 10;
                 dungeonWait("You killed the " + mob.getName() + "!"
                         +"\nYou are now " + this.dungeonPercent  + "% though the dungeon.");
+
+                //if the mob is a boss
                 if (mob instanceof Boss) {
-                    Boss boss = (Boss) mob;
+                    Boss boss = (Boss) mob; //convert mob to boss
                     this.player.replaceWeapon(boss.getItemDrop());
                     this.player.addShield(new Item("Shield"));
                     print("You found a " + boss.getItemDrop().getName() + " and a shield!");
                     this.bottomPanel.setVisible(false);
 
+                    //if it is the final boss
                     if (boss.getBossNumber() == 2) {
                         this.player.addShield(new Item("Great Shield"));
-                        this.player.replaceWeapon(new Item("Dragonbane",50));
+                        this.player.replaceWeapon(new Item("Dragonbane",50)); //create a new item
                     }
 
                 }
@@ -349,10 +364,13 @@ public class Game extends JFrame {
                 this.player.shieldChange();
                 setButtonText();
                 fight(mob);
-            } catch (Exception e1) {
+            }
+            //if the player has no shield, display error message
+            catch (Exception e1) {
                 JOptionPane.showMessageDialog(new JFrame(), "You dont have a shield!", "lol",
                         JOptionPane.ERROR_MESSAGE);
             }
+            //refresh display so the button text changes
             SwingUtilities.updateComponentTreeUI(this.bottomPanel);
         });
 
@@ -365,6 +383,7 @@ public class Game extends JFrame {
         this.bottomPanel.add(b1);
         this.bottomPanel.add(b2);
         this.bottomPanel.add(b3);
+        //id mob is boss, then don't allow run function
         if (mob instanceof Boss) {
             this.bottomPanel.remove(b3);
             SwingUtilities.updateComponentTreeUI(this.bottomPanel);
@@ -384,6 +403,7 @@ public class Game extends JFrame {
         Random rand = new Random();
         int random = rand.nextInt(BOUND);
 
+        //if the dungeonPercent is 50% or 90%  the event will be a boss fight
         if (this.dungeonPercent == 50) {fight(bosses.get(0));}
         else if (this.dungeonPercent == 90) {fight(bosses.get(1));}
 
@@ -447,6 +467,7 @@ public class Game extends JFrame {
         }
     }
 
+    //ends the game and gives different options depending on the type of ending
     public void endGame(boolean mode) {
         if (mode) {
             JOptionPane.showMessageDialog(new JFrame(), "You have died\nGame Over :)", "You Died",

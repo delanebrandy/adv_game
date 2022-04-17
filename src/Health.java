@@ -1,6 +1,5 @@
 public class Health {
-
-    private double health;
+    private double health; //health double as damage can be in 0.5 increments
 
     public Health(){
         this.health = 100;
@@ -10,6 +9,8 @@ public class Health {
         this.health = healthValue;
     }
 
+
+    //Setters and getters
     public void setHealth(double healthValue){
         this.health = healthValue;
     }
