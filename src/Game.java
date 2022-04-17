@@ -7,7 +7,6 @@
  * @since   2022-04-17
  */
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -78,12 +77,11 @@ public class Game extends JFrame {
         }
     }
 
-
     //Creates the GUI and starts the game
     public Game(){
         super("Dungeon Battle");
 
-        ImageIcon icon = new ImageIcon("icon.jpg");
+        ImageIcon icon = new ImageIcon("icon.png");
         this.setIconImage(icon.getImage());
 
         this.setLayout(new BorderLayout());
@@ -101,7 +99,7 @@ public class Game extends JFrame {
                 if(PromptResult==JOptionPane.YES_OPTION) {
                     try {
                         player.setCompleted(false);
-                        printToFile();
+                        printToFile(); //saves the player's stats to a file
                         System.exit(0);
                     }
                     //if player has not yet been created, exit without saving
@@ -137,7 +135,7 @@ public class Game extends JFrame {
         java.util.List<java.util.List<String>> records = new ArrayList<>();
         java.util.List<java.util.List<String>> records2 = new ArrayList<>();
 
-        String display = "Scoreboard:\n\nName, Weapon, Shield, Damage Boost, Completed?, Dungeon %\n\n";
+        String display = "Scoreboard:\nName, Weapon, Shield, Damage Boost, Completed?, Dungeon %\n\n";
         try {
             BufferedReader br = new BufferedReader(new FileReader("stats.csv")) ;
             String line;
@@ -383,7 +381,7 @@ public class Game extends JFrame {
         this.bottomPanel.add(b1);
         this.bottomPanel.add(b2);
         this.bottomPanel.add(b3);
-        //id mob is boss, then don't allow run function
+        //if mob is boss, then don't allow run function
         if (mob instanceof Boss) {
             this.bottomPanel.remove(b3);
             SwingUtilities.updateComponentTreeUI(this.bottomPanel);
@@ -396,7 +394,7 @@ public class Game extends JFrame {
         int BOUND = 101;
 
         //if the player has a boss drop weapon, the chance of getting a weapon drop is 0%
-        if (this.player.getWeaponName().equals("Energy Sword") || this.player.getWeaponName().equals("Energy Bow")) {
+        if (this.player.getWeaponName().equals("Energy Sword") || this.player.getWeaponName().equals("Axe")) {
             BOUND = 91;
         }
 

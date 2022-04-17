@@ -1,3 +1,9 @@
+/**
+ * The Item class is used to represent items in the game.
+ * Items have names, damage values and can can have defense values.
+ * Items can be used to heal the player.
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,6 +40,8 @@ public class Item {
         this.damage = 0;
     }
 
+    /*Allows the input of a name of an item and sets the corresponding damage and defence values
+    depending on the values in the arrayLists **/
     public Item(String name){
         try {
             if (!name.equals("EMPTY")){

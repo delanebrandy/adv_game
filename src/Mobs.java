@@ -1,3 +1,9 @@
+/**
+ * The Mobs class is used to create mobs.
+ * Mobs are the enemies in the game, and have damage.
+ * Mobs extend the Entity class.
+ */
+
 public class Mobs extends Entity {
     private final int damage;
 

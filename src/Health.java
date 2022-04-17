@@ -1,3 +1,7 @@
+/**
+ * The Health class is used to represent the health of am entity.
+ */
+
 public class Health {
     private double health; //health double as damage can be in 0.5 increments
 
@@ -8,7 +12,6 @@ public class Health {
     public Health(int healthValue){
         this.health = healthValue;
     }
-
 
     //Setters and getters
     public void setHealth(double healthValue){

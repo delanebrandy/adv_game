@@ -1,4 +1,11 @@
+/**
+ * The Entity class is the base class for all character objects in the game.#
+ * The Entity class contains all the basic properties of an entity, such as health and name.
+ * It also contains the basic methods for taking damage and attacking.
+ */
+
 public class Entity {
+
     private Health health;
     private String name;
 
@@ -12,6 +19,8 @@ public class Entity {
         this.health = new Health();
     }
 
+
+    //Setters and getters
     public void setEntity(String name, int health) {
         this.name = name;
         this.health.setHealth(health);
@@ -29,6 +38,7 @@ public class Entity {
         return name;
     }
 
+    //returns the health of the entity, if the entity is dead, returns 0
     public double getHealth() {
         if (this.health.getHealth() > 0) {
             return this.health.getHealth();

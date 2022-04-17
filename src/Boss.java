@@ -1,3 +1,9 @@
+/**
+ * The Boss class is a subclass of the Enemy class.
+ * It is the boss of the game.
+ * Bosses are the only mobs that have boss numbers and itemDrops.
+ */
+
 public class Boss extends Mobs  {
     public static int counter = 0; //counter for the boss number
     public final int bossNumber;
@@ -10,6 +16,7 @@ public class Boss extends Mobs  {
         this.itemDrop = new Item(itemDrop, itemDamage);
     }
 
+    //getters
     public Item getItemDrop() {
         return itemDrop;
     }

@@ -1,3 +1,9 @@
+/**
+ * The player class is used to represent the player in the game.
+ * The player has an inventory which holds 2 items.
+ * The class extends the entity class.
+ */
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -30,6 +36,7 @@ public class Player extends Entity{
         }
     }
 
+    //getters and setters
     public void setShield(){
         if (getShieldName().equals("Shield")){
             this.damageReduction = 2;
@@ -46,6 +53,7 @@ public class Player extends Entity{
         this.inventory.set(1, shield);
     }
 
+    //gives player different effects based on potion consumed
     public void useItem(String item){
         switch (item) {
             case "Health Potion":
@@ -62,6 +70,8 @@ public class Player extends Entity{
         }
     }
 
+    //reduces player health by damage/damage reduction (if shield is active)
+    @Override
     public void takeDamage(double value){
         if (this.shieldActive){
             this.damage(value/this.damageReduction);
@@ -75,6 +85,7 @@ public class Player extends Entity{
         return item.getDamage();
     }
 
+    //replaces weapon with new weapon if it is stronger else throws exception
     public void replaceWeapon(String itemName) throws Exception {
         if (this.inventory.get(0).getDamage()<(getItemDamage(itemName))){
             this.inventory.set(0, new Item(itemName));
@@ -83,15 +94,8 @@ public class Player extends Entity{
         }
     }
 
-
     public void replaceWeapon(Item item) {
-        if (this.inventory.get(0).getDamage()<(item.getDamage())){
-            this.inventory.set(0, item);
-        }
-    }
-
-    public ArrayList<Item> getItems(){
-        return this.inventory;
+        this.inventory.set(0, item);
     }
 
     public String getWeaponName(){
@@ -101,18 +105,13 @@ public class Player extends Entity{
         return inventory.get(1).getName();
     }
 
-    public boolean hasShield() {
-        return !inventory.get(1).getName().equals("EMPTY");
-    }
-
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
+    @Override
     public String toString(){
         return this.getName() + "," +this.inventory.get(0).getName() + "," + this.inventory.get(1).getName() + "," + this.damageBoost + "," + this.completed;
     }
-
-
 
 }
