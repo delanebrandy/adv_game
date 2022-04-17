@@ -130,7 +130,7 @@ public class Game extends JFrame {
         java.util.List<java.util.List<String>> records = new ArrayList<>();
         java.util.List<java.util.List<String>> records2 = new ArrayList<>();
 
-        String display = "Scoreboard:\n\n Name, Weapon, Shield, Damage Boost, Completed?, Dungeon %\n\n";
+        String display = "Scoreboard:\n\nName, Weapon, Shield, Damage Boost, Completed?, Dungeon %\n\n";
         try {
             BufferedReader br = new BufferedReader(new FileReader("stats.csv")) ;
             String line;
@@ -332,6 +332,7 @@ public class Game extends JFrame {
                     this.player.replaceWeapon(boss.getItemDrop());
                     this.player.addShield(new Item("Shield"));
                     print("You found a " + boss.getItemDrop().getName() + " and a shield!");
+                    this.bottomPanel.setVisible(false);
 
                     if (boss.getBossNumber() == 2) {
                         this.player.addShield(new Item("Great Shield"));
@@ -394,8 +395,11 @@ public class Game extends JFrame {
         //5% chance of finding a poison potion (-10 HP)
         else if (random < 30) {
             this.player.useItem("Poison Potion");
-            dungeonWait("You found a Potion :)!\nYou drank it :)"+"\nYou have " + this.player.getHealth() + " health left lol.");
-        }
+            if (player.getHealth()>0) {
+                dungeonWait("You found a Potion :)!\nYou drank it :)" + "\nYou have " + this.player.getHealth() + " health left lol.");
+            } else {
+                endGame(true);}
+            }
 
         //5% chance of finding a Strength Potion (+0.5 damage boost)
         else if (random < 35) {
@@ -424,7 +428,7 @@ public class Game extends JFrame {
                     this.player.replaceWeapon("Axe");
                     dungeonWait("You found an Axe!"+"\nYou now do " + this.player.attack() + " damage.");
                 } catch (Exception e) {
-                    dungeonWait("You found an Axe!\n But you cant replace your weapon with this one.");}
+                    dungeonWait("You found an Axe!\nBut you cant replace your weapon with this one.");}
                 }
         }
 
@@ -438,7 +442,7 @@ public class Game extends JFrame {
                     dungeonWait("You found a Long Sword!"+"\nYou now do " + this.player.attack() + " damage.");
                 }
                 catch (Exception e) {
-                    dungeonWait("You found a Long Sword\n But you cant replace your weapon with this one.");}
+                    dungeonWait("You found a Long Sword\nBut you cant replace your weapon with this one.");}
             }
         }
     }
