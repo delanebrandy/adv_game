@@ -1,5 +1,5 @@
 /**
- * The Entity class is the base class for all character objects in the game.#
+ * The Entity class is the base class for all character objects in the game.
  * The Entity class contains all the basic properties of an entity, such as health and name.
  * It also contains the basic methods for taking damage and attacking.
  */

@@ -1,5 +1,5 @@
 /**
- * The Boss class is a subclass of the Enemy class.
+ * The Boss class is a subclass of the Mob class.
  * It is the boss of the game.
  * Bosses are the only mobs that have boss numbers and itemDrops.
  */

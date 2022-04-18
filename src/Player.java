@@ -1,7 +1,7 @@
 /**
  * The player class is used to represent the player in the game.
  * The player has an inventory which holds 2 items.
- * The class extends the entity class.
+ * The class extends the Entity class.
  */
 
 import java.util.ArrayList;

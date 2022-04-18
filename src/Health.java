@@ -1,5 +1,5 @@
 /**
- * The Health class is used to represent the health of am entity.
+ * The Health class is used to represent the health of an entity.
  */
 
 public class Health {

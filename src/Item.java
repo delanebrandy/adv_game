@@ -1,7 +1,7 @@
 /**
  * The Item class is used to represent items in the game.
- * Items have names, damage values and can can have defense values.
- * Items can be used to heal the player.
+ * Items have names, damage values and can have defence values.
+ * Items can only affect the players damage reduction.
  */
 
 import java.util.ArrayList;
