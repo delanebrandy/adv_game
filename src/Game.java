@@ -121,7 +121,7 @@ public class Game extends JFrame {
         this.infoArea.setLineWrap(true);
         this.infoArea.setWrapStyleWord(true);
 
-        this.infoArea.setFont(new Font(null, Font.BOLD, 17));
+        this.infoArea.setFont(new Font("Bold", Font.BOLD, 17));
         panel.add(this.infoArea);
         this.add(panel, BorderLayout.NORTH);
         setVisible(true);
