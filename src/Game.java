@@ -121,7 +121,7 @@ public class Game extends JFrame {
         this.infoArea.setLineWrap(true);
         this.infoArea.setWrapStyleWord(true);
 
-        this.infoArea.setFont(new Font("Courier", Font.BOLD, 17));
+        this.infoArea.setFont(new Font(null, Font.BOLD, 17));
         panel.add(this.infoArea);
         this.add(panel, BorderLayout.NORTH);
         setVisible(true);
@@ -174,13 +174,13 @@ public class Game extends JFrame {
         );
 
         JLabel label = new JLabel("Whats your name? :)");
-        label.setFont(new Font("Courier", Font.BOLD, 18));
+        label.setFont(new Font(null, Font.BOLD, 18));
         this.bottomPanel.add(label);
 
         JPanel inputPanel = new JPanel();
 
         JTextField input = new JTextField(25);
-        input.setFont(new Font("Courier", Font.PLAIN, 17));
+        input.setFont(new Font(null, Font.PLAIN, 17));
         inputPanel.add(input);
 
         JButton button = new JButton("Enter");
